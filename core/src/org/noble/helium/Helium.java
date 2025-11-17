@@ -12,7 +12,6 @@ import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.subsystems.ui.UserInterface;
 import org.noble.helium.subsystems.input.InputProcessing;
 import org.noble.helium.rendering.HeliumModelBatch;
-import org.noble.helium.subsystems.scripting.ScriptRunner;
 import org.noble.helium.subsystems.Subsystem;
 
 import java.util.ArrayList;
@@ -79,7 +78,6 @@ public class Helium extends Game {
     SystemInformation.getInstance();
     m_player = PlayerController.getInstance();
     m_levelHandler = LevelHandler.getInstance();
-    m_subsystems.add(ScriptRunner.getInstance());
     m_subsystems.add(InputProcessing.getInstance());
     m_subsystems.add(UserInterface.getInstance());
 
