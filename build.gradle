@@ -30,7 +30,7 @@ allprojects {
         log4jVersion = '2.25.2'
         oshiVersion = '6.9.1'
         gsonVersion = '2.10.1'
-        miniaudioVersion = '0.5'
+        miniaudioVersion = '0.7'
     }
 
     repositories {
@@ -96,5 +96,8 @@ project(":core") {
         // SLF4J
         implementation("org.slf4j:slf4j-api:1.7.25")
 
+        //MiniAudio
+        implementation "games.rednblack.miniaudio:gdx-miniaudio-platform:$miniaudioVersion:natives-desktop"
+        api "games.rednblack.miniaudio:miniaudio:$miniaudioVersion"
     }
 }

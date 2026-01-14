@@ -81,7 +81,7 @@ public class PlayerController extends Actor {
   private ArrayList<WorldObject> getCollisions() {
     ArrayList<WorldObject> collisions = new ArrayList<>();
     for (WorldObject object : World.getInstance().getAllObjects()) {
-      if (!object.equals(m_worldObject) && m_worldObject.isColliding(object)) {//getBoundingBox().isColliding(object.getBoundingBox())) {
+      if (!object.equals(m_worldObject) && m_worldObject.isColliding(object)) {
         collisions.add(object);
       }
     }
@@ -90,8 +90,8 @@ public class PlayerController extends Actor {
 
   private void rotate() {
     // Update camera rotation based on mouse movement
-    m_cameraYaw += -Gdx.input.getDeltaX() * m_engine.getDelta() * 10f;
-    m_cameraPitch += Gdx.input.getDeltaY() * m_engine.getDelta() * 10f;
+    m_cameraYaw += -Gdx.input.getDeltaX() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
+    m_cameraPitch += Gdx.input.getDeltaY() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
 
     // Clamp pitch angle to prevent flipping
     m_cameraPitch = MathUtils.clamp(m_cameraPitch, -89f, 89f);

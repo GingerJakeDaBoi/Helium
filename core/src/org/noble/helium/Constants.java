@@ -12,5 +12,6 @@ public class Constants {
     public static final float k_jumpVerticalVelocity = 60.0f;
     public static final float k_terminalVelocity = 100.0f;
     public static final float k_gravity = (float) Math.pow(9.81,2); //9.81^2 is real gravity
+    public static final float k_mouseSensitivity = 10f;
   }
 }

@@ -2,6 +2,7 @@ package org.noble.helium.actors;
 
 import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Helium;
+import org.noble.helium.subsystems.Audio;
 import org.noble.helium.subsystems.world.WorldObject;
 
 public class Enemy extends Actor {
@@ -49,6 +50,7 @@ public class Enemy extends Actor {
       m_timer += delta;
       if(m_timer >= 1.0f) {
         m_followingActor.setHealth(m_followingActor.getHealth() - m_strength);
+        Audio.getInstance().playSound("hurt.wav");
         m_timer = 0.0f;
       }
     }

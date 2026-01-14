@@ -7,6 +7,7 @@ import org.noble.helium.actors.Enemy;
 import org.noble.helium.math.Dimensions3;
 import org.noble.helium.rendering.HeliumModelBuilder;
 import org.noble.helium.screens.HeliumLevel;
+import org.noble.helium.subsystems.Audio;
 import org.noble.helium.subsystems.world.WorldObject;
 
 public class PhysicsTest extends HeliumLevel {
@@ -18,6 +19,7 @@ public class PhysicsTest extends HeliumLevel {
   @Override
   public void init() {
     super.init();
+    Audio.getInstance().playSound("Haggstrom.mp3");
     m_actorHandler.addActor(new Enemy(new WorldObject(m_modelBuilder.create(HeliumModelBuilder.Shape.CUBE,
         m_textureHandler.getTexture(Color.RED), new Dimensions3(2f, 2f, 2f)),
         new Vector3(100f, 5f, 0f), WorldObject.CollisionType.NONE), 10,

@@ -9,6 +9,8 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(1600,900);
 		config.useVsync(true);
+		config.setIdleFPS(30);
+		config.setForegroundFPS(120);
 		config.setTitle("Helium");
 		new Lwjgl3Application(Helium.getInstance(), config);
 	}

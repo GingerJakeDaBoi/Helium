@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.ScreenUtils;
 import org.noble.helium.handling.LevelHandler;
+import org.noble.helium.subsystems.Audio;
 import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.subsystems.ui.UserInterface;
@@ -88,6 +89,7 @@ public class Helium extends Game {
 
     SystemInformation.getInstance();
     m_levelHandler = LevelHandler.getInstance();
+    m_subsystems.add(Audio.getInstance());
     m_subsystems.add(World.getInstance());
     m_subsystems.add(InputProcessing.getInstance());
     m_subsystems.add(UserInterface.getInstance());
