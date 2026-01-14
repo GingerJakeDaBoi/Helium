@@ -176,7 +176,7 @@ public class PlayerController extends Actor {
         float yMovement = targetY - nextPos.y;
 
         if (targetY > nextPos.y && yMovement < 3f) {
-          float speed = m_engine.getDelta() * 8f; // 2f * 4f
+          float speed = m_engine.getDelta() * getSpeed();
           nextPos.y += yMovement * speed;
           if (wantsToJump) {
             setVerticalVelocity(Constants.Player.k_jumpVerticalVelocity);
@@ -220,7 +220,6 @@ public class PlayerController extends Actor {
           nextPos.y = objPos.y + (extentA_y + extentB_y);
         }
 
-        nextPos.y -= 0.0005f;
         setVerticalVelocity(0f);
       } else {
         if (myPos.z < objPos.z) {
