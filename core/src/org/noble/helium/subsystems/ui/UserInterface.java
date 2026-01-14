@@ -12,7 +12,7 @@ import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
 import org.noble.helium.SystemInformation;
 import org.noble.helium.actors.PlayerController;
-import org.noble.helium.subsystems.World;
+import org.noble.helium.subsystems.world.World;
 import org.noble.helium.math.Units;
 import org.noble.helium.subsystems.Subsystem;
 

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.ScreenUtils;
 import org.noble.helium.handling.LevelHandler;
-import org.noble.helium.subsystems.World;
+import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.subsystems.ui.UserInterface;
 import org.noble.helium.subsystems.input.InputProcessing;

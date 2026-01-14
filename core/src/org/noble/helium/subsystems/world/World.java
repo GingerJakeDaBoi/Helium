@@ -1,4 +1,4 @@
-package org.noble.helium.subsystems;
+package org.noble.helium.subsystems.world;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -6,7 +6,7 @@ import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
 import org.noble.helium.actors.PlayerController;
 import org.noble.helium.rendering.HeliumModelBatch;
-import org.noble.helium.world.WorldObject;
+import org.noble.helium.subsystems.Subsystem;
 
 import java.util.ArrayList;
 

@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Constants;
 import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
-import org.noble.helium.subsystems.World;
+import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.math.Dimensions3;
 import org.noble.helium.rendering.HeliumModelBuilder;
 import org.noble.helium.subsystems.input.Action;
 import org.noble.helium.subsystems.input.InputProcessing;
-import org.noble.helium.world.WorldObject;
+import org.noble.helium.subsystems.world.WorldObject;
 
 import java.util.ArrayList;
 

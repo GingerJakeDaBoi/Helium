@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import org.noble.helium.Helium;
 import org.noble.helium.actors.PlayerController;
 import org.noble.helium.handling.ActorHandler;
-import org.noble.helium.subsystems.World;
+import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.rendering.HeliumModelBatch;
 import org.noble.helium.rendering.HeliumModelBuilder;

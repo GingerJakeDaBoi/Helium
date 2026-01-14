@@ -4,7 +4,7 @@ import org.noble.helium.Helium;
 import org.noble.helium.screens.HeliumLevel;
 import org.noble.helium.screens.tests.PhysicsTest;
 import org.noble.helium.HeliumIO;
-import org.noble.helium.subsystems.World;
+import org.noble.helium.subsystems.world.World;
 
 public class LevelHandler {
   private static LevelHandler m_instance;
