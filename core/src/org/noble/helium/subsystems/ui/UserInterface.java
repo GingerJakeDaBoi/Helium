@@ -12,7 +12,7 @@ import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
 import org.noble.helium.SystemInformation;
 import org.noble.helium.actors.PlayerController;
-import org.noble.helium.handling.ObjectHandler;
+import org.noble.helium.subsystems.world.World;
 import org.noble.helium.math.Units;
 import org.noble.helium.subsystems.Subsystem;
 
@@ -80,7 +80,7 @@ public class UserInterface extends Subsystem {
       m_hudLabels.get("MEMORY").setText(
           "Allocated memory: " + Units.bytesToMB(Runtime.getRuntime().totalMemory()) + "MB, " +
           "Free memory: " + Units.bytesToMB(Runtime.getRuntime().freeMemory()) + "MB");
-      m_hudLabels.get("WORLDOBJECT_COUNT").setText("Number of World Objects: " + ObjectHandler.getInstance().getAllObjects().size());
+      m_hudLabels.get("WORLDOBJECT_COUNT").setText("Number of World Objects: " + World.getInstance().getAllObjects().size());
     } catch (NullPointerException e) {
       HeliumIO.error("User Interface", e, HeliumIO.ErrorType.NONFATAL, false);
     }

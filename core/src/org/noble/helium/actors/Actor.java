@@ -2,7 +2,7 @@ package org.noble.helium.actors;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import org.noble.helium.world.WorldObject;
+import org.noble.helium.subsystems.world.WorldObject;
 
 public abstract class Actor implements Disposable {
   private int m_health;

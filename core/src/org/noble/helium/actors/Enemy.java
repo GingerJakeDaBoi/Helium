@@ -2,7 +2,7 @@ package org.noble.helium.actors;
 
 import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Helium;
-import org.noble.helium.world.WorldObject;
+import org.noble.helium.subsystems.world.WorldObject;
 
 public class Enemy extends Actor {
   private final Actor m_followingActor;
