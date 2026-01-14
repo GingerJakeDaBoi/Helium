@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import org.noble.helium.handling.ObjectHandler;
+import org.noble.helium.subsystems.World;
 import org.noble.helium.math.Box3D;
 import org.noble.helium.math.Dimensions3;
 import org.noble.helium.HeliumIO;
@@ -27,7 +27,7 @@ public class WorldObject extends ModelInstance {
     setPosition(position);
     m_collisionType = collision;
     m_shouldRender = true;
-    ObjectHandler.getInstance().add(this);
+    World.getInstance().add(this);
   }
 
   public int getCollisionType() {

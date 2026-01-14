@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Constants;
 import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
-import org.noble.helium.handling.ObjectHandler;
+import org.noble.helium.subsystems.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.math.Dimensions3;
 import org.noble.helium.rendering.HeliumModelBuilder;
@@ -80,7 +80,7 @@ public class PlayerController extends Actor {
 
   private ArrayList<WorldObject> getCollisions() {
     ArrayList<WorldObject> collisions = new ArrayList<>();
-    for (WorldObject object : ObjectHandler.getInstance().getAllObjects()) {
+    for (WorldObject object : World.getInstance().getAllObjects()) {
       if (!object.equals(m_worldObject) && m_worldObject.isColliding(object)) {//getBoundingBox().isColliding(object.getBoundingBox())) {
         collisions.add(object);
       }

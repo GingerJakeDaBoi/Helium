@@ -1,24 +1,27 @@
-package org.noble.helium.handling;
+package org.noble.helium.subsystems;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
+import org.noble.helium.actors.PlayerController;
 import org.noble.helium.rendering.HeliumModelBatch;
 import org.noble.helium.world.WorldObject;
 
 import java.util.ArrayList;
 
-public class ObjectHandler {
-  private static ObjectHandler m_instance;
+public class World extends Subsystem {
+  private static World m_instance;
   private final ArrayList<WorldObject> m_objects;
 
-  private ObjectHandler() {
+  private World() {
     m_objects = new ArrayList<>();
     HeliumIO.println("Object Handler", "Object handler initialized");
   }
 
-  public static ObjectHandler getInstance() {
+  public static World getInstance() {
     if(m_instance == null) {
-      m_instance = new ObjectHandler();
+      m_instance = new World();
     }
     return m_instance;
   }
@@ -37,13 +40,26 @@ public class ObjectHandler {
     }
     m_objects.clear();
   }
+  @Override
+  public void update() {
+    HeliumModelBatch batch = Helium.getInstance().getModelBatch();
+    Camera camera = PlayerController.getInstance().getCamera();
+    Environment environment = Helium.getInstance().getEnvironment();
 
-  public void update(HeliumModelBatch batch, Environment environment) {
+    batch.begin(camera);
+
     for(WorldObject object : m_objects) {
       object.update();
       if(object.shouldRender()) {
         batch.render(object, environment);
       }
     }
+
+    batch.end();
+  }
+
+  @Override
+  public void dispose() {
+
   }
 }

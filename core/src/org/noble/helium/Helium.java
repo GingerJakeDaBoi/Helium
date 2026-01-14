@@ -4,10 +4,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL32;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.ScreenUtils;
-import org.noble.helium.actors.PlayerController;
 import org.noble.helium.handling.LevelHandler;
-import org.noble.helium.handling.ObjectHandler;
+import org.noble.helium.subsystems.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.subsystems.ui.UserInterface;
 import org.noble.helium.subsystems.input.InputProcessing;
@@ -21,14 +23,13 @@ public class Helium extends Game {
   private State m_state;
   private WindowMode m_windowMode;
   private float m_delta;
-  private double m_targetTime;
   private String m_windowTitle;
   private Color m_backgroundColor;
   private static Helium m_instance;
   private final ArrayList<Subsystem> m_subsystems;
-  private PlayerController m_player;
   private HeliumModelBatch m_modelBatch;
   private LevelHandler m_levelHandler;
+  private Environment m_environment;
 
   private Helium() {
     m_subsystems = new ArrayList<>();
@@ -46,6 +47,16 @@ public class Helium extends Game {
       m_modelBatch = new HeliumModelBatch();
     }
     return m_modelBatch;
+  }
+
+  public Environment getEnvironment() {
+    if(m_environment == null) {
+      //TODO: Depending on context, return a different type of environment?
+      m_environment = new Environment();
+      m_environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.0f));
+      m_environment.add(new DirectionalLight().set(0.8f,0.8f,0.8f,-1f,-0.8f,-0.2f));
+    }
+    return m_environment;
   }
 
   public WindowMode getWindowMode() {
@@ -76,8 +87,8 @@ public class Helium extends Game {
     setWindowMode(WindowMode.WINDOWED);
 
     SystemInformation.getInstance();
-    m_player = PlayerController.getInstance();
     m_levelHandler = LevelHandler.getInstance();
+    m_subsystems.add(World.getInstance());
     m_subsystems.add(InputProcessing.getInstance());
     m_subsystems.add(UserInterface.getInstance());
 
@@ -87,8 +98,13 @@ public class Helium extends Game {
 
   @Override
   public void render() {
-    setTitle(Constants.Engine.k_prettyName + " - " + m_levelHandler.getLevelName() + " - " + getState());
     m_delta = Gdx.graphics.getDeltaTime();
+    setTitle(Constants.Engine.k_prettyName + " - " + m_levelHandler.getLevelName() + " - " + getState());
+
+    if(getModelBatch().isWorking()) {
+      getModelBatch().end();
+      HeliumIO.println("Renderer", "Model batch was not ended last cycle", HeliumIO.printType.ERROR);
+    }
 
     Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     Gdx.gl.glClear(GL32.GL_COLOR_BUFFER_BIT | GL32.GL_DEPTH_BUFFER_BIT);
@@ -145,7 +161,7 @@ public class Helium extends Game {
   @Override
   public void dispose() {
     TextureHandler.getInstance().clear();
-    ObjectHandler.getInstance().clear();
+    World.getInstance().clear();
     m_subsystems.forEach(Subsystem::dispose);
     m_levelHandler.dispose();
   }
