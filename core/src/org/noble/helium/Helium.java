@@ -100,6 +100,8 @@ public class Helium extends Game {
 
   @Override
   public void render() {
+    //FIXME: If the game is in windowed mode, the FPS is not entirely stable.
+    // I thought the problem was the physics--I was wrong.
     m_delta = Gdx.graphics.getDeltaTime();
     setTitle(Constants.Engine.k_prettyName + " - " + m_levelHandler.getLevelName() + " - " + getState());
 

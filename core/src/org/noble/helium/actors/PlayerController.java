@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Constants;
 import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
+import org.noble.helium.math.EulerAngles;
 import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.math.Dimensions3;
@@ -24,8 +25,9 @@ public class PlayerController extends Actor {
   private final PerspectiveCamera m_camera;
   private final Helium m_engine;
   private static PlayerController m_instance;
-  private float m_cameraPitch, m_cameraYaw, m_verticalVelocity;
+  private float m_verticalVelocity;
   private final PlayerType m_playerType;
+  private EulerAngles m_cameraRotation;
 
   private PlayerController() {
     super(null, 100, 8f);
@@ -46,8 +48,11 @@ public class PlayerController extends Actor {
     m_camera.near = 0.1f;
     m_camera.far = 5000f;
 
-    m_cameraYaw = 0.0f;
-    m_cameraPitch = 0.0f;
+//    m_cameraYaw = 0.0f;
+//    m_cameraPitch = 0.0f;
+
+//    m_playerVelocity = new Vector3();
+    m_cameraRotation = new EulerAngles(0f, 0f, 0f);
   }
 
   public static PlayerController getInstance() {
@@ -90,22 +95,24 @@ public class PlayerController extends Actor {
 
   private void rotate() {
     // Update camera rotation based on mouse movement
-    m_cameraYaw += -Gdx.input.getDeltaX() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
-    m_cameraPitch += Gdx.input.getDeltaY() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
-
-    // Clamp pitch angle to prevent flipping
-    m_cameraPitch = MathUtils.clamp(m_cameraPitch, -89f, 89f);
+    float yaw = m_cameraRotation.getYaw() - Gdx.input.getDeltaX() * m_engine.getDelta() *
+        Constants.Player.k_mouseSensitivity;
+    float pitch = MathUtils.clamp(m_cameraRotation.getPitch() + Gdx.input.getDeltaY() * m_engine.getDelta() *
+        Constants.Player.k_mouseSensitivity, -89f, 89f);
     if(m_playerType == PlayerType.DOOM) {
-      m_cameraPitch = 0.0f;
+      pitch = 0f;
     }
+    float roll = m_cameraRotation.getRoll();
+    m_cameraRotation = new EulerAngles(yaw, pitch, roll);
 
-    Quaternion quaternion = new Quaternion().setEulerAngles(m_cameraYaw, m_cameraPitch, 0);
+    Quaternion quaternion = new Quaternion().setEulerAngles(m_cameraRotation.getYaw(),
+        m_cameraRotation.getPitch(), m_cameraRotation.getRoll());
     m_camera.direction.set(Vector3.Z).mul(quaternion);
   }
 
   private void setVectorFromKeyboard(Vector3 nextPos, Vector3 tmp) {
     ArrayList<Action> actions = InputProcessing.getInstance().getQueuedActions();
-    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraYaw, 0, 0));
+    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraRotation.getYaw(), 0, 0));
     for(Action a : actions) {
       if(a.getFunction() == Action.InputFunction.STRAFE_FORWARD) {
         nextPos.add(tmp.set(m_camera.direction).scl(getSpeed() * m_engine.getDelta()));
@@ -120,7 +127,8 @@ public class PlayerController extends Actor {
         nextPos.add(tmp.set(m_camera.direction).crs(m_camera.up).nor().scl(getSpeed() * m_engine.getDelta()));
       }
     }
-    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraYaw, m_cameraPitch, 0));
+    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraRotation.getYaw(),
+        m_cameraRotation.getPitch(), m_cameraRotation.getRoll()));
   }
 
   private void translate() {

@@ -70,6 +70,7 @@ public class Audio extends Subsystem {
       }
     }
 
+    //TODO: Pause the sounds without stopping the engine, this is temporary.
     Helium.State gameState = Helium.getInstance().getState();
     if(gameState == Helium.State.PAUSE && isEnabled()) {
       m_isEnabled = false;
