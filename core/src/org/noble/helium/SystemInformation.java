@@ -4,14 +4,12 @@ import com.badlogic.gdx.Gdx;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.ComputerSystem;
-import oshi.hardware.Display;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.management.OperatingSystemMXBean;
-
+/**
+ * Exposes system information for quick access
+ */
 public class SystemInformation {
   private static SystemInformation m_instance;
   private final String m_osName;
@@ -73,6 +71,10 @@ public class SystemInformation {
 
   public int getRAMMB() {
     return m_ramMB;
+  }
+
+  public int getCPUCores() {
+    return m_cpuCores;
   }
 
   public int getGLVersionMajor() {
