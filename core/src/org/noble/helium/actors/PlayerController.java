@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import org.noble.helium.Constants;
 import org.noble.helium.Helium;
 import org.noble.helium.HeliumIO;
+import org.noble.helium.math.EulerAngles;
 import org.noble.helium.subsystems.world.World;
 import org.noble.helium.handling.TextureHandler;
 import org.noble.helium.math.Dimensions3;
@@ -24,8 +25,9 @@ public class PlayerController extends Actor {
   private final PerspectiveCamera m_camera;
   private final Helium m_engine;
   private static PlayerController m_instance;
-  private float m_cameraPitch, m_cameraYaw, m_verticalVelocity;
   private final PlayerType m_playerType;
+  private final Vector3 m_velocity;
+  private EulerAngles m_cameraRotation;
 
   private PlayerController() {
     super(null, 100, 8f);
@@ -34,7 +36,7 @@ public class PlayerController extends Actor {
 
     HeliumModelBuilder modelBuilder = HeliumModelBuilder.getInstance();
     TextureHandler textureHandler = TextureHandler.getInstance();
-    Model model = modelBuilder.create(HeliumModelBuilder.Shape.CUBE, textureHandler.getTexture(Color.WHITE), new Dimensions3(5f,15f,5f));
+    Model model = modelBuilder.create(HeliumModelBuilder.Shape.CUBE, textureHandler.getTexture(Color.WHITE), new Dimensions3(5f, 15f, 5f));
     m_worldObject = new WorldObject(model, new Vector3(), WorldObject.CollisionType.STANDARD);
 
     m_camera = new PerspectiveCamera();
@@ -45,9 +47,9 @@ public class PlayerController extends Actor {
 
     m_camera.near = 0.1f;
     m_camera.far = 5000f;
+    m_cameraRotation = new EulerAngles(0f, 0f, 0f);
 
-    m_cameraYaw = 0.0f;
-    m_cameraPitch = 0.0f;
+    m_velocity = new Vector3();
   }
 
   public static PlayerController getInstance() {
@@ -61,14 +63,8 @@ public class PlayerController extends Actor {
     return m_camera;
   }
 
-  public float getVerticalVelocity() {
-    return m_verticalVelocity;
-  }
-
-  public void setVerticalVelocity(float velocity) {
-    if(!(Math.abs(velocity) > Constants.Player.k_terminalVelocity)) {
-      m_verticalVelocity = velocity;
-    }
+  public void setVelocity(Vector3 velocity) {
+    m_velocity.set(velocity);
   }
 
   @Override
@@ -90,37 +86,36 @@ public class PlayerController extends Actor {
 
   private void rotate() {
     // Update camera rotation based on mouse movement
-    m_cameraYaw += -Gdx.input.getDeltaX() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
-    m_cameraPitch += Gdx.input.getDeltaY() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
-
-    // Clamp pitch angle to prevent flipping
-    m_cameraPitch = MathUtils.clamp(m_cameraPitch, -89f, 89f);
-    if(m_playerType == PlayerType.DOOM) {
-      m_cameraPitch = 0.0f;
+    float yaw = m_cameraRotation.getYaw() - Gdx.input.getDeltaX() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity;
+    float pitch = MathUtils.clamp(m_cameraRotation.getPitch() + Gdx.input.getDeltaY() * m_engine.getDelta() * Constants.Player.k_mouseSensitivity, -89f, 89f);
+    if (m_playerType == PlayerType.DOOM) {
+      pitch = 0f;
     }
+    float roll = m_cameraRotation.getRoll();
+    m_cameraRotation = new EulerAngles(yaw, pitch, roll);
 
-    Quaternion quaternion = new Quaternion().setEulerAngles(m_cameraYaw, m_cameraPitch, 0);
+    Quaternion quaternion = new Quaternion().setEulerAngles(m_cameraRotation.getYaw(), m_cameraRotation.getPitch(), m_cameraRotation.getRoll());
     m_camera.direction.set(Vector3.Z).mul(quaternion);
   }
 
   private void setVectorFromKeyboard(Vector3 nextPos, Vector3 tmp) {
     ArrayList<Action> actions = InputProcessing.getInstance().getQueuedActions();
-    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraYaw, 0, 0));
-    for(Action a : actions) {
-      if(a.getFunction() == Action.InputFunction.STRAFE_FORWARD) {
+    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraRotation.getYaw(), 0, 0));
+    for (Action a : actions) {
+      if (a.getFunction() == Action.InputFunction.STRAFE_FORWARD) {
         nextPos.add(tmp.set(m_camera.direction).scl(getSpeed() * m_engine.getDelta()));
       }
-      if(a.getFunction() == Action.InputFunction.STRAFE_BACKWARD) {
+      if (a.getFunction() == Action.InputFunction.STRAFE_BACKWARD) {
         nextPos.add(tmp.set(m_camera.direction).scl(-getSpeed() * m_engine.getDelta()));
       }
-      if(a.getFunction() == Action.InputFunction.STRAFE_LEFT) {
+      if (a.getFunction() == Action.InputFunction.STRAFE_LEFT) {
         nextPos.add(tmp.set(m_camera.direction).crs(m_camera.up).nor().scl(-getSpeed() * m_engine.getDelta()));
       }
-      if(a.getFunction() == Action.InputFunction.STRAFE_RIGHT) {
+      if (a.getFunction() == Action.InputFunction.STRAFE_RIGHT) {
         nextPos.add(tmp.set(m_camera.direction).crs(m_camera.up).nor().scl(getSpeed() * m_engine.getDelta()));
       }
     }
-    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraYaw, m_cameraPitch, 0));
+    m_camera.direction.set(Vector3.Z).mul(new Quaternion().setEulerAngles(m_cameraRotation.getYaw(), m_cameraRotation.getPitch(), m_cameraRotation.getRoll()));
   }
 
   private void translate() {
@@ -131,20 +126,20 @@ public class PlayerController extends Actor {
     boolean shouldJump = false;
 
     ArrayList<Action> actions = InputProcessing.getInstance().getQueuedActions();
-    for(Action a : actions) {
-      if(a.getFunction() == Action.InputFunction.JUMP) {
+    for (Action a : actions) {
+      if (a.getFunction() == Action.InputFunction.JUMP) {
         shouldJump = true;
         break;
       }
     }
 
-    switch(m_playerType) {
+    switch (m_playerType) {
       case STANDARD, DOOM -> {
         calculateCollisions(nextPos, collisions, shouldJump);
-        setVerticalVelocity(getVerticalVelocity() - Constants.Player.k_gravity * m_engine.getDelta());
+        m_velocity.y -= Constants.Player.k_gravity * m_engine.getDelta();
 
         setVectorFromKeyboard(nextPos, tmp);
-        nextPos.y += getVerticalVelocity() * m_engine.getDelta();
+        nextPos.y += m_velocity.y * m_engine.getDelta();
       }
       case FLY -> {
         calculateCollisions(nextPos, collisions, shouldJump);
@@ -179,9 +174,9 @@ public class PlayerController extends Actor {
           float speed = m_engine.getDelta() * getSpeed();
           nextPos.y += yMovement * speed;
           if (wantsToJump) {
-            setVerticalVelocity(Constants.Player.k_jumpVerticalVelocity);
+            m_velocity.y = Constants.Player.k_jumpVerticalVelocity;
           } else {
-            setVerticalVelocity(0f);
+            m_velocity.y = 0.0f;
           }
           shouldCalculate = false;
         }
@@ -220,7 +215,7 @@ public class PlayerController extends Actor {
           nextPos.y = objPos.y + (extentA_y + extentB_y);
         }
 
-        setVerticalVelocity(0f);
+        m_velocity.y = 0.0f;
       } else {
         if (myPos.z < objPos.z) {
           nextPos.z = objPos.z - (extentA_z + extentB_z);
@@ -229,8 +224,8 @@ public class PlayerController extends Actor {
         }
       }
 
-      if (wantsToJump && (getVerticalVelocity() == 0.0f || hasClimbable)) {
-        setVerticalVelocity(Constants.Player.k_jumpVerticalVelocity);
+      if (wantsToJump && (m_velocity.y == 0.0f || hasClimbable)) {
+        m_velocity.y = Constants.Player.k_jumpVerticalVelocity;
       }
     }
   }
@@ -241,14 +236,14 @@ public class PlayerController extends Actor {
     m_camera.update();
     m_worldObject.update();
 
-    if(getHealth() <= 0) {
+    if (getHealth() <= 0) {
       HeliumIO.notify("Player", "You Died!");
       setHealth(100);
     }
   }
 
   public void reset() {
-    setVerticalVelocity(0f);
+    m_velocity.y = 0.0f;
     setPosition(new Vector3(0f, 0f, 0f));
   }
 

@@ -22,6 +22,10 @@ public class Audio extends Subsystem {
     HeliumIO.println("Audio", "Audio subsystem initialized");
   }
 
+  /**
+   * The only way to access the Audio class
+   * @return The audio subsystem
+   */
   public static Audio getInstance() {
     if(m_instance == null) {
       m_instance = new Audio();
@@ -29,18 +33,34 @@ public class Audio extends Subsystem {
     return m_instance;
   }
 
+  /**
+   *
+   * @return Is any sort of audio supposed to be playing
+   */
   public boolean isEnabled() {
     return m_isEnabled;
   }
 
+  /**
+   * Play a sound instantly
+   * @param sound Name of a sound in assets/audio/
+   */
   public void playSound(String sound) {
     m_instantSounds.add(m_miniAudio.createSound("assets/audio/" + sound));
   }
 
+  /**
+   * Queue a sound to play
+   * @param sound Name of a sound in assets/audio
+   */
   public void queueSound(String sound) {
     m_queuedSounds.add(m_miniAudio.createSound("assets/audio/" + sound));
   }
 
+  /**
+   * Queue a list of sounds to play
+   * @param sounds List of strings containing sounds in assets/audio
+   */
   public void queueSounds(String[] sounds) {
     for(String sound : sounds) {
       queueSound(sound);
@@ -70,6 +90,7 @@ public class Audio extends Subsystem {
       }
     }
 
+    //TODO: Pause the sounds without stopping the engine, this is temporary.
     Helium.State gameState = Helium.getInstance().getState();
     if(gameState == Helium.State.PAUSE && isEnabled()) {
       m_isEnabled = false;
